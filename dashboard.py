@@ -7,9 +7,11 @@ from tle_fetcher import load_satellites
 
 satellites = load_satellites()
 
+
 st.set_page_config(layout="wide")
 st.title("Live Satellite Tracker")
 st.write("Tracking satellites in real time")
+st.write(f"Loaded {len(satellites)} satellites")
 
 ts = load.timescale(builtin=True)
 t = ts.now()
