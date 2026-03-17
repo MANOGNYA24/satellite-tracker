@@ -3,7 +3,9 @@ import pandas as pd
 from datetime import datetime, timezone, timedelta
 import plotly.graph_objects as go
 from skyfield.api import load, EarthSatellite, wgs84
-from tle_fetcher import satellites
+from tle_fetcher import load_satellites
+
+satellites = load_satellites()
 
 st.set_page_config(layout="wide")
 st.title("Live Satellite Tracker")
