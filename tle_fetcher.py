@@ -129,16 +129,16 @@ def parse_fallback():
 
 def load_satellites():
     try:
-        url = "https://satchecker.cps.iau.org/tools/tles-at-epoch/?page=1&per_page=100"
+        url = "https://tle.ivanstanojevic.me/api/tle?page-size=100"
         response = requests.get(url, timeout=15)
         response.raise_for_status()
         data = response.json()
         satellites = []
-        for item in data:
+        for item in data["member"]:
             satellites.append({
-                "name": item["satellite_name"],
-                "line1": item["tle_line1"],
-                "line2": item["tle_line2"]
+                "name": item["name"],
+                "line1": item["line1"],
+                "line2": item["line2"]
             })
         print(f"Loaded {len(satellites)} satellites!")
         return satellites
