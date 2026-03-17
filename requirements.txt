@@ -2,5 +2,4 @@ skyfield
 requests
 pandas
 plotly
-streamlit
-pillow
+streamlit==1.40.0
