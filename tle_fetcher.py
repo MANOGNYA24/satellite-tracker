@@ -44,7 +44,7 @@ def load_satellites():
                 continue
         i += 1
     return satellites
-"""
+
 
 import requests
 
@@ -58,6 +58,54 @@ def load_satellites():
         return []
 
     lines = response.text.strip().splitlines()
+    satellites = []
+    i = 0
+    while i < len(lines) - 2:
+        if not lines[i].startswith("1 ") and not lines[i].startswith("2 "):
+            name = lines[i].strip()
+            line1 = lines[i+1]
+            line2 = lines[i+2]
+            if line1.startswith("1 ") and line2.startswith("2 "):
+                satellites.append({"name": name, "line1": line1, "line2": line2})
+                i += 3
+                continue
+        i += 1
+    return satellites
+"""
+
+import requests
+
+FALLBACK_TLES = """ISS (ZARYA)
+1 25544U 98067A   24001.50000000  .00016717  00000-0  30757-3 0  9993
+2 25544  51.6400 208.9163 0006317  86.9840 273.1530 15.49815849432729
+CSS (TIANHE)
+1 48274U 21035A   24001.50000000  .00029757  00000-0  34787-3 0  9993
+2 48274  41.4663 181.9138 0006689 299.3968  60.6202 15.60904690278280
+NOAA 19
+1 33591U 09005A   24001.50000000  .00000068  00000-0  68568-4 0  9994
+2 33591  99.1920  45.6400 0014027 330.7700  29.2900 14.12362762768523
+TERRA
+1 25994U 99068A   24001.50000000  .00000076  00000-0  26093-4 0  9990
+2 25994  98.2104 106.8945 0001206  89.9870 270.1460 14.57115954282138
+AQUA
+1 27424U 02022A   24001.50000000  .00000076  00000-0  26093-4 0  9991
+2 27424  98.2104 106.8945 0001206  89.9870 270.1460 14.57115954282139"""
+
+def load_satellites():
+    try:
+        url = "https://celestrak.org/NORAD/elements/gp.php?GROUP=stations&FORMAT=TLE"
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        raw = response.text.strip()
+        if "1 " in raw:
+            print("Loaded live data from CelesTrak!")
+        else:
+            raise ValueError("Bad response")
+    except Exception:
+        print("CelesTrak unavailable, using fallback data.")
+        raw = FALLBACK_TLES
+
+    lines = raw.strip().splitlines()
     satellites = []
     i = 0
     while i < len(lines) - 2:
